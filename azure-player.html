@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Azure Player — mp3-плеер для Windows — MirrorMirage</title>
+  <meta name="description" content="Azure Player — футуристичный mp3-плеер для Windows от студии MirrorMirage: живая визуализация, обложки альбомов, таймер сна, четыре темы. Бесплатная проба 7 дней, разовая покупка.">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Стили этой страницы. Общий вид сайта берётся из style.css */
+    .ap-hero { text-align: center; padding: 60px 0 20px; }
+    .ap-badge { display: inline-block; padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--cyan); font-size: .8rem; letter-spacing: .12em; margin-bottom: 16px; }
+    .ap-hero h1 { font-size: clamp(2rem, 5.5vw, 3.6rem); line-height: 1.12; letter-spacing: .02em; }
+    .ap-hero h1 span { color: var(--cyan); text-shadow: 0 0 28px rgba(56,214,255,.5); }
+    .ap-hero p.lead { max-width: 680px; margin: 16px auto 0; color: var(--muted); font-size: 1.1rem; }
+    .ap-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
+    .ap-note { color: var(--muted); font-size: .9rem; margin-top: 14px; }
+    .ap-shot { width: 100%; height: auto; display: block; filter: drop-shadow(0 18px 40px rgba(47,107,255,.3)); }
+    .ap-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start; }
+    .ap-cap { color: var(--muted); font-size: .9rem; margin-top: 8px; text-align: center; }
+    .ap-sub { color: var(--muted); margin: -12px 0 22px; }
+    .ap-new { display: inline-block; margin-left: 8px; padding: 0 8px; border-radius: 999px; background: rgba(56,214,255,.15); color: var(--cyan); font-size: .7rem; letter-spacing: .1em; vertical-align: middle; }
+    .ap-table { width: 100%; border-collapse: collapse; background: var(--glass); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .ap-table td { padding: 11px 16px; border-bottom: 1px solid var(--line); }
+    .ap-table tr:last-child td { border-bottom: 0; }
+    .ap-table td:first-child { color: var(--muted); width: 38%; }
+    details.ap-faq { border: 1px solid var(--line); border-radius: 14px; background: var(--glass); padding: 14px 18px; margin-bottom: 10px; }
+    details.ap-faq summary { cursor: pointer; font-weight: 600; color: var(--cyan); }
+    details.ap-faq p { margin: 10px 0 0; color: var(--text); opacity: .9; }
+    .ap-hash { font-family: Consolas, "Courier New", monospace; font-size: .8rem; word-break: break-all; color: var(--muted); }
+    .btn.disabled { opacity: .55; cursor: default; pointer-events: none; }
+  </style>
+</head>
+<body class="bg-portal">
+
+<header class="site">
+  <div class="container">
+    <a class="brand" href="index.html">
+      <img src="images/icon.png" alt="Логотип MirrorMirage">
+      <span>MIRRORMIRAGE</span>
+    </a>
+    <nav><ul><li><a href="index.html">Главная</a></li><li><a href="programs.html" class="active">Программы</a></li><li><a href="services.html">Услуги</a></li><li><a href="about.html">О студии</a></li><li><a href="contacts.html">Контакты</a></li></ul></nav>
+  </div>
+</header>
+
+
+<main>
+  <div class="container">
+    <div class="ap-hero">
+      <div class="ap-badge">ВЕРСИЯ 1.2 · WINDOWS 10 / 11</div>
+      <h1>Плеер для mp3,<br>который <span>приятно включать</span></h1>
+      <p class="lead">Неоновый интерфейс, живая визуализация настоящего звука, обложки альбомов, таймер сна и четыре темы. Укажите папки с музыкой — остальное плеер сделает сам. В фоне он почти не тратит ресурсы компьютера.</p>
+      <div class="ap-cta">
+        <a class="btn" id="download" href="https://github.com/MirrorMirage-Studio/azure-player-downloads/releases/latest/download/AzurePlayer_Setup.exe">Скачать — 7 дней бесплатно</a>
+        <span class="btn ghost disabled" title="Оплата скоро появится">Купить — скоро</span>
+      </div>
+      <p class="ap-note">Разовая покупка · без подписки · без рекламы · работает без интернета</p>
+    </div>
+    <img class="ap-shot" src="images/azure-player/library.png" alt="Azure Player: библиотека, обложка и визуализация">
+  </div>
+
+  <section class="block" id="features">
+    <div class="container">
+      <h2>Всё, что нужно от плеера</h2>
+      <p class="ap-sub">Быстро запускается, не грузит компьютер и не мешает.</p>
+      <div class="grid">
+        <div class="card"><h3>Ваши папки</h3><p>Добавьте папки с музыкой: плеер найдёт mp3, flac, wav, ogg, m4a и другие форматы во всех вложенных папках и сам обновит список при запуске.</p></div>
+        <div class="card"><h3>Живая визуализация</h3><p>Пять видов: волна, столбики, круг, осциллограф или выключено. Реагирует на настоящий звук, переключается одним щелчком.</p></div>
+        <div class="card"><h3>Обложки альбомов</h3><p>Берутся из тегов песни или из картинки в папке альбома. Нет обложки — плеер нарисует свою.</p></div>
+        <div class="card"><h3>Таймер сна</h3><p>15–90 минут, своё время или «в конце трека». Музыка плавно затихает и встаёт на паузу, можно засыпать.</p></div>
+        <div class="card"><h3>Четыре темы</h3><p>Синяя, тёмная, светлая и системная: она сама переключается вместе со светлой или тёмной темой Windows.</p></div>
+        <div class="card"><h3>Работает в фоне</h3><p>Закрыли окно, музыка играет. Около 1 % процессора и 5 МБ памяти. Управление из трея, медиа-клавишами и кнопками в превью на панели задач.</p></div>
+        <div class="card"><h3>Плейлисты</h3><p>Создавайте, переименовывайте, меняйте порядок треков. Импорт и экспорт M3U.</p></div>
+        <div class="card"><h3>Русский и английский</h3><p>Язык интерфейса переключается одним щелчком, без перезапуска.</p></div>
+        <div class="card"><h3>Помнит всё</h3><p>Громкость, режимы, тему и место, где вы остановились. «Открыть с помощью» запускает трек сразу.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Пять видов визуализации</h2>
+      <p class="ap-sub">Выберите в настройках или просто щёлкните по визуализации в окне плеера.</p>
+      <img class="ap-shot" src="images/azure-player/visualizers.png" alt="Виды визуализации: волна, столбики, круг, осциллограф">
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Темы под настроение</h2>
+      <p class="ap-sub">Тёмный фон, мягкое свечение, скруглённые формы и плавные анимации в любой теме.</p>
+      <div class="ap-two">
+        <div><img class="ap-shot" src="images/azure-player/playlist.png" alt="Тёмная тема и плейлист"><div class="ap-cap">Тёмная тема · плейлист · визуализация «Столбики»</div></div>
+        <div><img class="ap-shot" src="images/azure-player/light.png" alt="Светлая тема"><div class="ap-cap">Светлая тема · визуализация «Круг»</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Удобные настройки</h2>
+      <p class="ap-sub">Всё в одном окне: работа в фоне, автозапуск, тема, язык, визуализация и таймер сна.</p>
+      <div class="ap-two">
+        <div><img class="ap-shot" src="images/azure-player/settings.png" alt="Настройки: внешний вид"><div class="ap-cap">Темы и язык интерфейса</div></div>
+        <div><img class="ap-shot" src="images/azure-player/settings_timer.png" alt="Настройки: таймер сна"><div class="ap-cap">Таймер сна с плавным затуханием</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Как это работает</h2>
+      <ol class="steps">
+        <li><strong>Скачайте и установите.</strong> Установщик на русском, ярлык появится на рабочем столе.</li>
+        <li><strong>Пользуйтесь 7 дней бесплатно.</strong> В пробном режиме доступны все возможности.</li>
+        <li><strong>Понравилось? Купите лицензию.</strong> Вы получите ключ, вставите его в «Настройки → Лицензия», и плеер ваш навсегда.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Системные требования</h2>
+      <table class="ap-table">
+        <tr><td>Система</td><td>Windows 10 или 11, 64-бит</td></tr>
+        <tr><td>Процессор и память</td><td>Любой современный ПК, от 2 ГБ ОЗУ</td></tr>
+        <tr><td>Место на диске</td><td>около 300 МБ</td></tr>
+        <tr><td>Интернет</td><td>не нужен (даже для проверки лицензии)</td></tr>
+        <tr><td>Форматы</td><td>mp3, flac, wav, ogg, m4a, aac, opus, wma</td></tr>
+        <tr><td>Языки</td><td>русский, английский</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <h2>Вопросы</h2>
+      <details class="ap-faq"><summary>Что я получаю после покупки?</summary><p>Лицензионный ключ. Установщик можно скачать здесь же, он один для всех: пробная версия превращается в полную после ввода ключа.</p></details>
+      <details class="ap-faq"><summary>Плеер отправляет мои данные куда-либо?</summary><p>Нет. Программа работает полностью локально и не требует интернета. Настройки и плейлисты хранятся на вашем компьютере.</p></details>
+      <details class="ap-faq"><summary>Windows или антивирус ругается при установке</summary><p>Если у новой программы ещё нет репутации, Windows SmartScreen может показать окно «Windows защитила ваш компьютер». Нажмите «Подробнее» → «Выполнить в любом случае». Если антивирус блокирует файл, напишите на <a href="mailto:mirrormirage-dev@mail.ru">mirrormirage-dev@mail.ru</a>, мы поможем. Проверить, что файл не изменён, можно по контрольной сумме SHA-256 (ниже).</p></details>
+      <details class="ap-faq"><summary>На скольких компьютерах можно пользоваться?</summary><p>Лицензия действует на 3 ваших устройства.</p></details>
+      <details class="ap-faq"><summary>Будут ли обновления?</summary><p>Да, обновления внутри версии 1.x бесплатны.</p></details>
+      <details class="ap-faq"><summary>Можно ли вернуть деньги?</summary><p>Программа — цифровой товар, а попробовать её полностью можно 7 дней бесплатно, поэтому после выдачи ключа возврат не производится. Исключение: плеер не запускается на вашем компьютере, и мы не смогли это исправить. Условие не ограничивает ваши права по закону о защите прав потребителей. Подробнее — в лицензионном соглашении при установке.</p></details>
+      <details class="ap-faq"><summary>Контрольная сумма установщика (SHA-256)</summary><p class="ap-hash" id="sha">050c372dc8db80d33c23187abcb32a42006adb0d37a41bf1743b9ab76a18be06</p></details>
+    </div>
+  </section>
+
+  <section class="block" style="text-align:center">
+    <div class="container">
+      <h2>Включите музыку по-новому</h2>
+      <p class="ap-sub" style="margin-top:6px">Разовая покупка, лицензия навсегда.</p>
+      <a class="btn" href="https://github.com/MirrorMirage-Studio/azure-player-downloads/releases/latest/download/AzurePlayer_Setup.exe">Скачать — 7 дней бесплатно</a>
+    </div>
+  </section>
+</main>
+
+
+<footer class="site">
+  <div class="container">
+    <div>© 2026 MirrorMirage. Все права защищены.</div>
+    <ul><li><a href="index.html">Главная</a></li><li><a href="programs.html">Программы</a></li><li><a href="services.html">Услуги</a></li><li><a href="about.html">О студии</a></li><li><a href="contacts.html">Контакты</a></li></ul>
+  </div>
+</footer>
+
+</body>
+</html>
