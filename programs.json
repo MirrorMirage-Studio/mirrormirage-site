@@ -1,5 +1,5 @@
 {
-  "_подсказка": "Здесь тексты и цены каталога. Версию, дату и ссылку на установщик подставляет скрипт из релизов GitHub. releases_repo — ПУБЛИЧНЫЙ репозиторий, где лежит установщик.",
+  "_подсказка": "Здесь тексты и цены каталога. Версию, дату и ссылку на установщик подставляет скрипт из релизов GitHub. releases_repo — ПУБЛИЧНЫЙ репозиторий, где лежит установщик. Поле buy — код покупки в боте @Mirrormiragebot (кнопка «Купить» ведёт на t.me/Mirrormiragebot?start=КОД). Без него кнопки «Купить» нет.",
   "programs": [
     {
       "id": "azure-player",
@@ -8,7 +8,9 @@
       "image": "images/azure-player/library.png",
       "page": "azure-player.html",
       "releases_repo": "MirrorMirage-Studio/azure-player-downloads",
-      "price": "Пробная версия — 7 дней бесплатно"
+      "price": "199 ₽",
+      "price_note": "цена запуска, потом 299 ₽ · 7 дней бесплатно",
+      "buy": "buy_azure_player"
     },
     {
       "id": "sleep-timer",

@@ -17,6 +17,7 @@ from pathlib import Path
 КОРЕНЬ = Path(__file__).resolve().parent.parent
 МЕСЯЦЫ = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля",
           "августа", "сентября", "октября", "ноября", "декабря"]
+БОТ = "https://t.me/Mirrormiragebot?start="
 НАЧАЛО, КОНЕЦ = "<!-- CATALOG:START -->", "<!-- CATALOG:END -->"
 
 
@@ -58,17 +59,21 @@ def карточка(п, релиз):
     if релиз and установщик:
         версия = релиз["tag_name"].lstrip("vV")
         метка = f'Windows · версия {e(версия)} · {e(дата_по_русски(релиз["published_at"]))}'
-        кнопка = (f'<a class="btn" href="{e(п["page"])}">Подробнее</a>' if п.get("page")
-                  else f'<a class="btn" href="{e(установщик["browser_download_url"])}">Скачать</a>')
+        подробнее = (f'<a class="btn ghost" href="{e(п["page"])}">Подробнее</a>' if п.get("page")
+                     else f'<a class="btn ghost" href="{e(установщик["browser_download_url"])}">Скачать</a>')
+        # Кнопка «Купить» ведёт в Telegram-бота на нужный товар
+        кнопка = (f'<a class="btn" href="{БОТ}{e(п["buy"])}">Купить</a> {подробнее}'
+                  if п.get("buy") else подробнее)
     else:
         метка = "В разработке"
         кнопка = '<a class="btn ghost" href="contacts.html">Следить за новостями</a>'
 
+    примечание = f' <small>{e(п["price_note"])}</small>' if п.get("price_note") else ""
     return (f'      <div class="card">\n        {картинка}\n'
             f'        <span class="tag">{метка}</span>\n'
             f'        <h3>{e(п["name"])}</h3>\n'
             f'        <p>{e(п["description"])}</p>\n'
-            f'        <div class="price">{e(п["price"])}</div>\n'
+            f'        <div class="price">{e(п["price"])}{примечание}</div>\n'
             f'        {кнопка}\n      </div>\n')
 
 

@@ -199,3 +199,39 @@ footer.site ul { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; }
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
 }
+
+/* ---------- Магазин: витрина, доверие, вопросы ---------- */
+.card .price small { display: block; font-size: .8rem; font-weight: 400; color: var(--muted); }
+.card .btn + .btn { margin-left: 8px; }
+
+.showcase {
+  display: grid; gap: 34px; grid-template-columns: 1.1fr 1fr; align-items: center;
+  background: var(--glass); border: 1px solid var(--line); border-radius: 22px;
+  padding: 34px; box-shadow: 0 0 40px rgba(47,107,255,.15);
+}
+.showcase img { width: 100%; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 0 30px rgba(56,214,255,.2); }
+.showcase .tag { display: inline-block; font-size: .78rem; padding: 3px 10px; border-radius: 999px; background: rgba(56,214,255,.14); color: var(--cyan); }
+.showcase h2 { font-size: 2rem; margin: 10px 0; }
+.showcase p { color: var(--muted); margin-bottom: 16px; }
+.showcase .price-big { font-size: 2rem; font-weight: 700; color: #fff; text-shadow: 0 0 18px rgba(56,214,255,.5); margin-bottom: 4px; }
+.showcase .price-big small { font-size: .9rem; font-weight: 400; color: var(--muted); text-shadow: none; }
+.showcase .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.showcase .fine { font-size: .8rem; margin: 12px 0 0; }
+
+.trust { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.trust div { text-align: center; padding: 18px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--glass); }
+.trust b { display: block; color: var(--cyan); font-size: 1.05rem; margin-bottom: 4px; }
+.trust span { color: var(--muted); font-size: .9rem; }
+
+details.faq { background: var(--glass); border: 1px solid var(--line); border-radius: 14px; padding: 14px 20px; margin-bottom: 12px; }
+details.faq summary { cursor: pointer; font-weight: 600; }
+details.faq p { color: var(--muted); margin-top: 10px; }
+
+/* Юридические ссылки: мелко и спокойно, но всегда доступны */
+footer.site .legal { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(120,160,255,.1); font-size: .75rem; opacity: .65; justify-content: center; }
+footer.site .legal a { color: var(--muted); text-decoration: underline; }
+footer.site .legal a:hover { color: var(--text); }
+.fine { font-size: .8rem; color: var(--muted); }
+.fine a { color: var(--muted); text-decoration: underline; }
+
+@media (max-width: 800px) { .showcase { grid-template-columns: 1fr; padding: 22px; } }
