@@ -1,0 +1,42 @@
+{
+  "_подсказка": "Здесь тексты и цены каталога. Версию, дату и ссылку на установщик подставляет скрипт из релизов GitHub. releases_repo — ПУБЛИЧНЫЙ репозиторий, где лежит установщик.",
+  "programs": [
+    {
+      "id": "azure-player",
+      "name": "Azure Player",
+      "description": "Футуристичный mp3-плеер: живая визуализация, обложки альбомов, таймер сна и четыре темы.",
+      "image": "images/azure-player/library.png",
+      "page": "azure-player.html",
+      "releases_repo": "MirrorMirage-Studio/azure-player-downloads",
+      "price": "Пробная версия — 7 дней бесплатно"
+    },
+    {
+      "id": "sleep-timer",
+      "name": "Sleep Timer",
+      "description": "Таймер спящего режима: задайте время, и компьютер сам уснёт или выключится.",
+      "releases_repo": "MirrorMirage-Studio/sleep-timer-downloads",
+      "price": "Скоро в продаже"
+    },
+    {
+      "id": "universal-vpn",
+      "name": "MirrorMirage VPN",
+      "description": "Универсальный VPN-клиент для Windows.",
+      "releases_repo": "MirrorMirage-Studio/universal-vpn-downloads",
+      "price": "Скоро в продаже"
+    },
+    {
+      "id": "manga-translator",
+      "name": "Manga Translator",
+      "description": "Перевод манги на русский язык.",
+      "releases_repo": "MirrorMirage-Studio/manga-translator-downloads",
+      "price": "Скоро в продаже"
+    },
+    {
+      "id": "wallpaper-switcher",
+      "name": "Переключатель обоев",
+      "description": "Смена рабочего стола между двумя пресетами в один клик.",
+      "releases_repo": "MirrorMirage-Studio/wallpaper-switcher-downloads",
+      "price": "Скоро в продаже"
+    }
+  ]
+}
