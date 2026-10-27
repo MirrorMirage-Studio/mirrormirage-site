@@ -16,6 +16,7 @@
       "id": "sleep-timer",
       "name": "Sleep Timer",
       "description": "Таймер спящего режима: задайте время, и компьютер сам уснёт или выключится.",
+      "image": "images/sleep-timer/screens.png",
       "releases_repo": "MirrorMirage-Studio/sleep-timer-downloads",
       "price": "Бесплатно",
       "price_note": "без оплаты и регистрации"
