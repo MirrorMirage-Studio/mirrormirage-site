@@ -143,3 +143,44 @@ def test_home_scroll_hint_and_trust_icons():
     assert any(а.get("id") == "trust" for _, а in теги)
     значки = [а for т, а in теги if т == "svg" and "gem" in классы(а)]
     assert len(значки) == 4, f"у каждого из 4 пунктов доверия должен быть значок-кристалл, найдено {len(значки)}"
+
+
+def test_no_dead_links():
+    # кнопка с href="#" ничего не делает (так было у «Заказать»): пустых ссылок быть не должно
+    for путь in СТРАНИЦЫ:
+        for т, а in разобрать(путь).теги:
+            if т == "a":
+                assert а.get("href") not in (None, "", "#"), f"{путь.name}: ссылка без адреса: {а}"
+
+
+def test_local_links_and_anchors_resolve():
+    # локальные ссылки ведут на существующие файлы, а #якоря - на существующие id той же страницы
+    for путь in СТРАНИЦЫ:
+        теги = разобрать(путь).теги
+        id_страницы = {а["id"] for _, а in теги if "id" in а}
+        for т, а in теги:
+            адрес = а.get("href") if т == "a" else None
+            if not адрес or адрес.startswith(("http://", "https://", "mailto:", "tel:")):
+                continue
+            if адрес.startswith("#"):
+                assert адрес[1:] in id_страницы, f"{путь.name}: нет якоря {адрес}"
+            else:
+                файл = адрес.split("#")[0].split("?")[0].lstrip("/")
+                assert (КОРЕНЬ / файл).exists(), f"{путь.name}: ссылка на несуществующий файл {адрес}"
+
+
+def test_sheen_does_not_stretch_page():
+    # блик нельзя двигать через transform: clip-path срезает его только визуально, а страница
+    # всё равно растёт вширь и появляется горизонтальная прокрутка. Блик едет фоном внутри блока.
+    css = (КОРЕНЬ / "style.css").read_text(encoding="utf-8")
+    ключевые = re.search(r"@keyframes sheen\s*\{(.*?)\n\}", css, re.DOTALL)
+    assert ключевые, "не найден @keyframes sheen"
+    assert "transform" not in ключевые.group(1), "блик двигается через transform и растягивает страницу"
+    assert "background-position" in ключевые.group(1)
+
+
+def test_no_duplicate_ids():
+    for путь in СТРАНИЦЫ:
+        id_список = [а["id"] for _, а in разобрать(путь).теги if "id" in а]
+        повторы = {i for i in id_список if id_список.count(i) > 1}
+        assert not повторы, f"{путь.name}: повторяются id {повторы}"
