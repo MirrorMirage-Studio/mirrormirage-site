@@ -102,8 +102,9 @@ a:hover { text-decoration: underline; }
 /* ---------- Шапка ---------- */
 header.site {
   position: sticky; top: 0; z-index: 10;
-  background: rgba(5, 10, 28, .72);
-  backdrop-filter: blur(12px);
+  background: rgba(5, 10, 28, .6);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
   border-bottom: 1px solid var(--line);
 }
 header.site .container {
@@ -112,19 +113,48 @@ header.site .container {
 }
 .brand { display: flex; align-items: center; gap: 12px; color: var(--text); }
 .brand:hover { text-decoration: none; }
-.brand img { width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 0 18px rgba(56,214,255,.45); }
+.brand img { width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 0 18px rgba(56,214,255,.45); animation: logo-glow 4s ease-in-out infinite; }
+@keyframes logo-glow {
+  0%, 100% { box-shadow: 0 0 18px rgba(56,214,255,.4); }
+  50%      { box-shadow: 0 0 28px rgba(56,214,255,.75); }
+}
 .brand span { letter-spacing: .1em; font-size: .92rem; }
 
-/* Кнопка-бургер: оформляется в задаче 2, пока скрыта */
-.menu-toggle { display: none; }
+/* Кнопка-бургер: видна только на телефоне и только если работает скрипт (см. @media внизу) */
+.menu-toggle {
+  display: none; position: relative; width: 44px; height: 44px; flex: none;
+  border: 1px solid var(--line); border-radius: 12px; background: rgba(47,107,255,.12); cursor: pointer;
+}
+.menu-toggle:hover { border-color: var(--cyan); }
+.menu-toggle:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.menu-toggle span, .menu-toggle span::before, .menu-toggle span::after {
+  position: absolute; height: 2px; border-radius: 2px; background: var(--text);
+  transition: transform .25s, top .25s, background .2s;
+}
+.menu-toggle span { left: 11px; right: 11px; top: 20px; }
+.menu-toggle span::before, .menu-toggle span::after { content: ""; left: 0; right: 0; }
+.menu-toggle span::before { top: -7px; }
+.menu-toggle span::after  { top: 7px; }
+header.site.open .menu-toggle span { background: transparent; }
+header.site.open .menu-toggle span::before { top: 0; transform: rotate(45deg); }
+header.site.open .menu-toggle span::after  { top: 0; transform: rotate(-45deg); }
 
 nav ul { list-style: none; display: flex; gap: 6px; flex-wrap: wrap; }
 nav a {
-  display: block; padding: 8px 14px; border-radius: 999px;
+  position: relative; display: block; padding: 8px 14px; border-radius: 999px;
   color: var(--muted); font-size: .95rem; transition: .2s;
 }
 nav a:hover { color: var(--text); background: rgba(47,107,255,.18); text-decoration: none; }
-nav a.active { color: #fff; background: rgba(47,107,255,.35); box-shadow: 0 0 14px rgba(47,107,255,.5); }
+nav a.active { color: #fff; background: none; }
+/* Грань под активным пунктом: линия 1px с ромбом посередине */
+nav a.active::after {
+  content: ""; position: absolute; left: 14px; right: 14px; bottom: 3px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+nav a.active::before {
+  content: ""; position: absolute; left: 50%; bottom: .5px; width: 6px; height: 6px; margin-left: -3px;
+  background: var(--cyan); transform: rotate(45deg); box-shadow: 0 0 8px var(--cyan);
+}
 
 /* ---------- Кнопки ---------- */
 .btn {
@@ -211,8 +241,17 @@ section.block > .container > h2 { margin-bottom: 22px; font-size: 1.35rem; }
 
 /* ---------- Подвал ---------- */
 footer.site {
-  margin-top: 70px; padding: 34px 0; border-top: 1px solid var(--line);
+  position: relative; margin-top: 70px; padding: 34px 0;
   background: rgba(5, 10, 28, .75); color: var(--muted); font-size: .92rem;
+}
+/* Сверху подвала: тонкая светящаяся линия с ромбом-кристаллом по центру */
+footer.site::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+footer.site::after {
+  content: ""; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; margin-left: -4px;
+  background: var(--cyan); transform: rotate(45deg); box-shadow: 0 0 10px var(--cyan);
 }
 footer.site .container { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
 footer.site ul { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; }
@@ -221,7 +260,16 @@ footer.site ul { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; }
 @media (max-width: 640px) {
   body { background-attachment: scroll; }
   .hero { padding: 70px 0 60px; }
-  header.site .container { justify-content: center; }
+  html:not(.js) header.site .container { justify-content: center; }
+}
+
+/* Меню на телефоне: со скриптом — бургер, без скрипта — обычный список */
+@media (max-width: 700px) {
+  .js .menu-toggle { display: block; }
+  .js header.site nav { display: none; width: 100%; order: 3; }
+  .js header.site.open nav { display: block; }
+  .js header.site nav ul { flex-direction: column; gap: 2px; padding: 6px 0 10px; }
+  .js header.site nav a { padding: 12px 14px; }
 }
 
 /* ---------- Баннер главной страницы ----------
@@ -286,8 +334,9 @@ details.faq summary { cursor: pointer; font-weight: 600; }
 details.faq p { color: var(--muted); margin-top: 10px; }
 
 /* Юридические ссылки: мелко и спокойно, но всегда доступны */
-footer.site .legal { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(120,160,255,.1); font-size: .75rem; opacity: .65; justify-content: center; }
-footer.site .legal a { color: var(--muted); text-decoration: underline; }
+footer.site .legal { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(120,160,255,.1); font-size: .78rem; color: var(--legal); justify-content: center; transition: color .2s; }
+footer.site .legal:hover { color: var(--muted); }
+footer.site .legal a { color: inherit; text-decoration: underline; }
 footer.site .legal a:hover { color: var(--text); }
 .fine { font-size: .8rem; color: var(--muted); }
 .fine a { color: var(--muted); text-decoration: underline; }
