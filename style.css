@@ -158,18 +158,13 @@ nav a.active::before {
 
 /* ---------- Кнопки ---------- */
 .btn {
-  display: inline-block; padding: 13px 28px; border-radius: 999px;
+  display: inline-block; padding: 13px 28px;
   font-weight: 600; border: 1px solid transparent; cursor: pointer;
-  background: linear-gradient(135deg, var(--blue), var(--cyan));
-  color: #031028; transition: .25s; font-size: 1rem;
-  box-shadow: 0 0 22px rgba(56,214,255,.35);
+  background: linear-gradient(135deg, var(--blue), var(--cyan)); background-origin: border-box;
+  color: #031028; transition: transform .25s, filter .25s; font-size: 1rem;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 0 34px rgba(56,214,255,.6); text-decoration: none; }
-.btn.ghost {
-  background: transparent; color: var(--text);
-  border-color: var(--line); box-shadow: none;
-}
-.btn.ghost:hover { border-color: var(--cyan); box-shadow: 0 0 18px rgba(56,214,255,.3); }
+.btn:hover { transform: translateY(-2px); filter: brightness(1.1); text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--text); }
 
 /* ---------- Главный экран ---------- */
 .hero { text-align: center; padding: 110px 0 90px; }
@@ -204,11 +199,9 @@ section.block > .container > h2 { margin-bottom: 22px; font-size: 1.35rem; }
 .grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 
 .card {
-  background: var(--glass); border: 1px solid var(--line);
-  border-radius: 18px; padding: 26px;
-  backdrop-filter: blur(8px); transition: .25s;
+  padding: 26px; transition: transform .25s, background-color .25s;
 }
-.card:hover { border-color: var(--cyan); box-shadow: 0 0 28px rgba(56,214,255,.18); transform: translateY(-3px); }
+.card:hover { transform: translateY(-3px); }
 .card h3 { margin-bottom: 8px; font-size: 1.05rem; }
 .card p { color: var(--muted); margin-bottom: 14px; }
 .card .tag {
@@ -225,8 +218,7 @@ section.block > .container > h2 { margin-bottom: 22px; font-size: 1.35rem; }
 
 .steps { counter-reset: step; list-style: none; display: grid; gap: 16px; }
 .steps li {
-  counter-increment: step; background: var(--glass); border: 1px solid var(--line);
-  border-radius: 14px; padding: 18px 20px 18px 66px; position: relative;
+  counter-increment: step; padding: 18px 20px 18px 66px;
 }
 .steps li::before {
   content: counter(step); position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
@@ -315,7 +307,7 @@ footer.site ul { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; }
   background: var(--glass); border: 1px solid var(--line); border-radius: 22px;
   padding: 34px; box-shadow: 0 0 40px rgba(47,107,255,.15);
 }
-.showcase img { width: 100%; border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 0 30px rgba(56,214,255,.2); }
+.showcase img { width: 100%; display: block; }
 .showcase .tag { display: inline-block; font-size: .78rem; padding: 3px 10px; border-radius: 999px; background: rgba(56,214,255,.14); color: var(--cyan); }
 .showcase h2 { font-size: 1.6rem; margin: 10px 0; }
 .showcase p { color: var(--muted); margin-bottom: 16px; }
@@ -325,11 +317,11 @@ footer.site ul { list-style: none; display: flex; gap: 18px; flex-wrap: wrap; }
 .showcase .fine { font-size: .8rem; margin: 12px 0 0; }
 
 .trust { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.trust div { text-align: center; padding: 18px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--glass); }
+.trust div { text-align: center; padding: 18px 14px; }
 .trust b { display: block; color: var(--cyan); font-size: 1.05rem; margin-bottom: 4px; }
 .trust span { color: var(--muted); font-size: .9rem; }
 
-details.faq { background: var(--glass); border: 1px solid var(--line); border-radius: 14px; padding: 14px 20px; margin-bottom: 12px; }
+details.faq { padding: 14px 20px; margin-bottom: 12px; }
 details.faq summary { cursor: pointer; font-weight: 600; }
 details.faq p { color: var(--muted); margin-top: 10px; }
 
@@ -342,3 +334,79 @@ footer.site .legal a:hover { color: var(--text); }
 .fine a { color: var(--muted); text-decoration: underline; }
 
 @media (max-width: 800px) { .showcase { grid-template-columns: 1fr; padding: 22px; } }
+
+/* ============================================================
+   Кристальные формы: срезанные углы, рамка-перелив, блик
+   Относится к: .card, .trust div, .steps li, details.faq, .btn,
+   а также рамке скриншота .showcase > a.
+   Как это устроено:
+   - clip-path срезает углы (он же обрезает тени, поэтому свечения у этих блоков нет);
+   - рамку рисует border-image: градиент, угол которого вращается при наведении;
+   - на срезанных углах свет рисуют два маленьких градиента-фона (--glint-*);
+   - блик — полоса ::after, которая один раз проезжает слева направо.
+   ============================================================ */
+@property --edge-angle { syntax: "<angle>"; inherits: false; initial-value: 135deg; }
+
+:root {
+  --glint-tl: linear-gradient(135deg, transparent 50%, var(--facet) 50%, var(--facet) calc(50% + 1.5px), transparent calc(50% + 1.5px));
+  --glint-br: linear-gradient(135deg, transparent calc(50% - 1.5px), var(--facet) calc(50% - 1.5px), var(--facet) 50%, transparent 50%);
+}
+
+.card, .trust div, .steps li, details.faq, .btn.ghost, .showcase > a {
+  --cut: 14px;
+  position: relative; isolation: isolate;
+  border: 1px solid transparent;
+  border-image: linear-gradient(var(--edge-angle), var(--cyan), rgba(47,107,255,.15) 50%, var(--cyan)) 1;
+  background-color: var(--glass);
+  background-image: var(--glint-tl), var(--glint-br);
+  background-size: var(--cut) var(--cut);
+  background-position: 0 0, 100% 100%;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.btn.ghost { --cut: 10px; background-color: transparent; backdrop-filter: none; }
+.showcase > a { display: block; background-color: transparent; backdrop-filter: none; }
+.showcase > a img { clip-path: polygon(13px 0, 100% 0, 100% calc(100% - 13px), calc(100% - 13px) 100%, 0 100%, 0 13px); }
+
+.card, .trust div, .steps li, details.faq, .showcase > a,
+.btn, .btn.ghost {
+  clip-path: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+}
+.btn { --cut: 10px; position: relative; isolation: isolate; }
+
+/* Блик */
+.card::after, .trust div::after, .steps li::after, details.faq::after, .showcase > a::after, .btn::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%;
+  pointer-events: none; opacity: 0;
+  background: linear-gradient(100deg, transparent, rgba(160,220,255,.28), transparent);
+  transform: translateX(-110%) skewX(-20deg);
+}
+.card:hover::after, .card:focus-within::after,
+.trust div:hover::after, .steps li:hover::after,
+details.faq:hover::after, details.faq:focus-within::after,
+.showcase > a:hover::after, .showcase > a:focus-visible::after,
+.btn:hover::after, .btn:focus-visible::after { animation: sheen .9s ease-out 1; }
+@keyframes sheen {
+  from { opacity: 1; transform: translateX(-110%) skewX(-20deg); }
+  to   { opacity: 1; transform: translateX(310%) skewX(-20deg); }
+}
+
+/* Перелив рамки при наведении и фокусе */
+.card:hover, .card:focus-within, .trust div:hover, .steps li:hover,
+details.faq:hover, details.faq:focus-within, .btn.ghost:hover, .btn.ghost:focus-visible,
+.showcase > a:hover, .showcase > a:focus-visible { animation: edge-spin 4s linear infinite; }
+@keyframes edge-spin { to { --edge-angle: 495deg; } }
+.card:hover { background-color: rgba(14, 26, 72, .72); }
+
+/* Фокус с клавиатуры: контур внутри кнопки (снаружи его обрезал бы clip-path) */
+.btn:focus-visible { outline: 2px solid #fff; outline-offset: -6px; }
+.showcase > a:focus-visible { outline: 2px solid var(--cyan); outline-offset: -4px; }
+
+/* Людям, которым анимация мешает: ничего не двигается и не бегает */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
