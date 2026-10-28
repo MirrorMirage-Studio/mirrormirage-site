@@ -344,7 +344,7 @@ footer.site .legal a:hover { color: var(--text); }
    - clip-path срезает углы (он же обрезает тени, поэтому свечения у этих блоков нет);
    - рамку рисует border-image: градиент, угол которого вращается при наведении;
    - на срезанных углах свет рисуют два маленьких градиента-фона (--glint-*);
-   - блик — полоса ::after, которая один раз проезжает слева направо.
+   - блик — фон ::after, который один раз проезжает слева направо внутри блока.
    ============================================================ */
 @property --edge-angle { syntax: "<angle>"; inherits: false; initial-value: 135deg; }
 
@@ -380,10 +380,12 @@ footer.site .legal a:hover { color: var(--text); }
 
 /* Блик */
 .card::after, .trust div::after, .steps li::after, details.faq::after, .showcase > a::after, .btn::after {
-  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%;
+  content: ""; position: absolute; inset: 0;
   pointer-events: none; opacity: 0;
-  background: linear-gradient(100deg, transparent, rgba(160,220,255,.28), transparent);
-  transform: translateX(-110%) skewX(-20deg);
+  /* блик - это фон, который едет внутри блока: ему негде выйти за край и растянуть страницу */
+  background: linear-gradient(100deg, transparent, rgba(160,220,255,.28), transparent) no-repeat;
+  background-size: 45% 100%;
+  background-position: -90% 0;
 }
 .card:hover::after, .card:focus-within::after,
 .trust div:hover::after, .steps li:hover::after,
@@ -391,8 +393,8 @@ details.faq:hover::after, details.faq:focus-within::after,
 .showcase > a:hover::after, .showcase > a:focus-visible::after,
 .btn:hover::after, .btn:focus-visible::after { animation: sheen .9s ease-out 1; }
 @keyframes sheen {
-  from { opacity: 1; transform: translateX(-110%) skewX(-20deg); }
-  to   { opacity: 1; transform: translateX(310%) skewX(-20deg); }
+  from { opacity: 1; background-position: -90% 0; }
+  to   { opacity: 1; background-position: 190% 0; }
 }
 
 /* Перелив рамки при наведении и фокусе */
