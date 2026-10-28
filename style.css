@@ -90,7 +90,7 @@ body.bg-citadel { background-image: url("images/bg-citadel.jpg"); }
 button, input, select, textarea { font-family: inherit; }
 
 /* Заголовки — Unbounded (он широкий, поэтому размеры и разрядка скромнее) */
-h1, h2, h3, .brand span, .hero-title { font-family: var(--font-head); font-weight: 500; }
+h1, h2, h3, .brand span, .hero-title { font-family: var(--font-head); font-weight: 500; overflow-wrap: break-word; }
 h1, .hero-title, .brand span { font-weight: 700; }
 b, strong, summary, .btn { font-weight: 600; }
 
@@ -478,3 +478,11 @@ section[id] { scroll-margin-top: 80px; }
 .reveal-on section.block.shown { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal-on section.block { opacity: 1; transform: none; } }
 html.reduce-motion.reveal-on section.block { opacity: 1; transform: none; }
+
+/* Узкий телефон: длинные слова в заголовках (например «Конфиденциальность») должны помещаться */
+@media (max-width: 480px) {
+  .page-title h1 { font-size: 1.3rem; letter-spacing: .01em; }
+}
+
+/* Служебные страницы (body.calm): только шапка, подвал и шрифты, без анимаций */
+body.calm .brand img { animation: none; }

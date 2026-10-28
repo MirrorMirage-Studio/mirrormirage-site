@@ -232,6 +232,8 @@
      Класс reveal-on (его ставим здесь) прячет section.block, класс shown показывает.
      При «уменьшить анимацию» (и при ?reduce-motion) всё видно сразу. */
   function initReveal() {
+    // проявление нужно только главной; на служебных страницах (calm) и внутренних блоки видны сразу
+    if (document.body.classList.contains('calm') || !document.querySelector('.hero-banner')) return;
     var blocks = document.querySelectorAll('section.block');
     if (!blocks.length) return;
     var root = document.documentElement;
