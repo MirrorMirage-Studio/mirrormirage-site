@@ -410,3 +410,12 @@ details.faq:hover, details.faq:focus-within, .btn.ghost:hover, .btn.ghost:focus-
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ---------- Холст с кристаллами (создаёт crystals.js) ----------
+   Лежит под текстом блока, клики пропускает. Без скрипта этих правил просто нет. */
+.crystal-host { position: relative; }
+canvas.crystals { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.crystal-host > :not(canvas.crystals) { position: relative; z-index: 1; }
+
+/* Параметр ?reduce-motion — то же, что системная настройка «уменьшить анимацию» (для проверок) */
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after { animation: none !important; transition: none !important; }
