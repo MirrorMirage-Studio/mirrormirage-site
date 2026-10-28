@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
-"""Собирает каталог программ на programs.html из programs.json и релизов GitHub.
+"""Собирает каталоги программ из programs.json и релизов GitHub:
+  - programs.html: полные карточки всех программ (между CATALOG:START / CATALOG:END);
+  - index.html: компактные карточки блока «Другие программы» (между HOME-CATALOG:START / HOME-CATALOG:END),
+    без программы-витрины Azure Player.
 
 Запуск: python tools/build_catalog.py
 Токен (необязательно) берётся из переменной GITHUB_TOKEN — так лимит запросов выше.
+Если что-то не так (нет меток, лимит GitHub, нет сети), скрипт останавливается с понятной
+фразой и не меняет ни один файл.
 """
 import html
 import json
@@ -19,6 +24,8 @@ from pathlib import Path
           "августа", "сентября", "октября", "ноября", "декабря"]
 БОТ = "https://t.me/Mirrormiragebot?start="
 НАЧАЛО, КОНЕЦ = "<!-- CATALOG:START -->", "<!-- CATALOG:END -->"
+HOME_НАЧАЛО, HOME_КОНЕЦ = "<!-- HOME-CATALOG:START -->", "<!-- HOME-CATALOG:END -->"
+ВИТРИНА = "azure-player"  # эта программа показана на главной отдельным крупным блоком
 
 
 def последний_релиз(репозиторий):
@@ -44,6 +51,12 @@ def дата_по_русски(iso):
     return f"{д.day} {МЕСЯЦЫ[д.month - 1]} {д.year}"
 
 
+def найти_установщик(релиз):
+    """Первый файл-установщик среди файлов релиза или None."""
+    return next((a for a in (релиз or {}).get("assets", [])
+                 if a["name"].lower().endswith((".exe", ".zip", ".msi"))), None)
+
+
 def карточка(п, релиз):
     e = html.escape
     # Картинка: скриншот программы или заглушка
@@ -54,8 +67,7 @@ def карточка(п, релиз):
     else:
         картинка = '<div class="placeholder-shot">скриншот программы</div>'
 
-    установщик = next((a for a in (релиз or {}).get("assets", [])
-                       if a["name"].lower().endswith((".exe", ".zip", ".msi"))), None)
+    установщик = найти_установщик(релиз)
     if релиз and установщик:
         версия = релиз["tag_name"].lstrip("vV")
         метка = f'Windows · версия {e(версия)} · {e(дата_по_русски(релиз["published_at"]))}'
@@ -77,25 +89,80 @@ def карточка(п, релиз):
             f'        {кнопка}\n      </div>\n')
 
 
+def компактная_карточка(п, релиз):
+    """Маленькая карточка для блока «Другие программы» на главной."""
+    e = html.escape
+    if п.get("image"):
+        картинка = f'<img class="thumb" src="{e(п["image"])}" alt="{e(п["name"])}" loading="lazy">'
+        if п.get("page"):
+            картинка = f'<a href="{e(п["page"])}">{картинка}</a>'
+    else:
+        картинка = '<div class="placeholder-shot">скриншот программы</div>'
+
+    установщик = найти_установщик(релиз)
+    if п.get("page"):
+        ссылка = f'<a href="{e(п["page"])}">Подробнее →</a>'
+    elif установщик:
+        ссылка = f'<a href="{e(установщик["browser_download_url"])}">Скачать →</a>'
+    else:
+        ссылка = '<a href="contacts.html">Следить →</a>'
+
+    return (f'      <div class="card mini" data-program="{e(п.get("id", ""))}">\n        {картинка}\n'
+            f'        <h3>{e(п["name"])}</h3>\n'
+            f'        <div class="price">{e(п["price"])}</div>\n'
+            f'        {ссылка}\n      </div>\n')
+
+
+def вставить_между(текст, начало, конец, блок, файл):
+    """Заменяет всё между метками на блок. Нет меток: остановка с понятной фразой."""
+    шаблон = re.compile("(" + re.escape(начало) + ").*?([ \\t]*)(" + re.escape(конец) + ")", re.DOTALL)
+    if not шаблон.search(текст):
+        sys.exit(f"В {файл} нет меток {начало} и {конец}. Файлы не изменены.")
+    # отступ перед закрывающей меткой сохраняем как был, чтобы повторный запуск ничего не менял
+    return шаблон.sub(lambda m: f"{m.group(1)}\n{блок}{m.group(2)}{m.group(3)}", текст, count=1)
+
+
 def главная():
     данные = json.loads((КОРЕНЬ / "programs.json").read_text(encoding="utf-8"))
-    готовые, будущие = [], []
-    for п in данные["programs"]:
-        релиз = последний_релиз(п["releases_repo"])
-        (готовые if релиз else будущие).append(карточка(п, релиз))
-        print(f'{п["name"]}: {релиз["tag_name"] if релиз else "релиза нет"}')
+    программы = данные["programs"]
 
-    блок = "\n".join(готовые + будущие)
-    страница = КОРЕНЬ / "programs.html"
-    текст = страница.read_text(encoding="utf-8")
-    шаблон = re.compile(re.escape(НАЧАЛО) + r".*?" + re.escape(КОНЕЦ), re.S)
-    if not шаблон.search(текст):
-        sys.exit("В programs.html нет маркеров CATALOG:START / CATALOG:END")
-    новый = шаблон.sub(lambda _: f"{НАЧАЛО}\n{блок}      {КОНЕЦ}", текст)
-    if новый != текст:
-        страница.write_text(новый, encoding="utf-8")
-        print("programs.html обновлён")
-    else:
+    # 1. Сначала спрашиваем GitHub обо всех релизах. Любой сбой: выходим, ничего не записав.
+    релизы = {}
+    try:
+        for п in программы:
+            релизы[п["id"]] = последний_релиз(п["releases_repo"])
+            print(f'{п["name"]}: {релизы[п["id"]]["tag_name"] if релизы[п["id"]] else "релиза нет"}')
+    except urllib.error.HTTPError as ошибка:
+        if ошибка.code == 403:
+            sys.exit("GitHub не отвечает: превышен лимит запросов (403). "
+                     "Попробуйте позже или задайте GITHUB_TOKEN. Файлы не изменены.")
+        sys.exit(f"GitHub ответил ошибкой {ошибка.code}. Файлы не изменены.")
+    except urllib.error.URLError as ошибка:
+        sys.exit(f"Нет связи с GitHub ({ошибка.reason}). Файлы не изменены.")
+
+    # 2. Собираем оба новых текста в памяти (нет меток: остановка тут же).
+    def блок(отбор, делать):
+        готовые = [делать(п, релизы[п["id"]]) for п in программы if отбор(п) and релизы[п["id"]]]
+        будущие = [делать(п, релизы[п["id"]]) for п in программы if отбор(п) and not релизы[п["id"]]]
+        return "\n".join(готовые + будущие)
+
+    задания = [
+        (КОРЕНЬ / "programs.html", НАЧАЛО, КОНЕЦ, блок(lambda п: True, карточка)),
+        (КОРЕНЬ / "index.html", HOME_НАЧАЛО, HOME_КОНЕЦ, блок(lambda п: п["id"] != ВИТРИНА, компактная_карточка)),
+    ]
+    результат = []
+    for путь, начало, конец, текст_блока in задания:
+        старый = путь.read_text(encoding="utf-8")
+        результат.append((путь, старый, вставить_между(старый, начало, конец, текст_блока, путь.name)))
+
+    # 3. Только теперь пишем файлы.
+    изменено = False
+    for путь, старый, новый in результат:
+        if новый != старый:
+            путь.write_text(новый, encoding="utf-8", newline="\n")
+            print(f"{путь.name} обновлён")
+            изменено = True
+    if not изменено:
         print("Изменений нет")
 
 
