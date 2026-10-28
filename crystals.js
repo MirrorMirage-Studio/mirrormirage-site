@@ -228,7 +228,51 @@
     }
   };
 
-  initCrystals();
-  initMenu();
-  // Сюда в задаче 6 добавится initReveal().
+  /* ---------- Проявление блоков при прокрутке ----------
+     Класс reveal-on (его ставим здесь) прячет section.block, класс shown показывает.
+     При «уменьшить анимацию» (и при ?reduce-motion) всё видно сразу. */
+  function initReveal() {
+    var blocks = document.querySelectorAll('section.block');
+    if (!blocks.length) return;
+    var root = document.documentElement;
+    function showAll() {
+      for (var i = 0; i < blocks.length; i++) blocks[i].classList.add('shown');
+    }
+    root.classList.add('reveal-on');
+    if (motionQuery.matches || forceReduce || !('IntersectionObserver' in window)) { showAll(); return; }
+    motionQuery.addEventListener('change', function (e) { if (e.matches) showAll(); });
+    Array.prototype.forEach.call(blocks, function (block) {
+      // порог 0.15, но для очень высоких блоков меньше, чтобы они гарантированно проявились
+      var ratio = Math.min(0.15, (window.innerHeight * 0.5) / Math.max(block.offsetHeight, 1));
+      var observer = new IntersectionObserver(function (entries) {
+        if (entries.some(function (e) { return e.isIntersecting; })) {
+          block.classList.add('shown');
+          observer.disconnect();
+        }
+      }, { threshold: ratio });
+      observer.observe(block);
+    });
+  }
+
+  /* ---------- Лёгкий наклон скриншота в витрине ----------
+     Только для мыши (pointer: fine) и если анимация не отключена. До 6 градусов. */
+  function initTilt() {
+    var frame = document.querySelector('.showcase > a');
+    if (!frame || motionQuery.matches || forceReduce) return;
+    if (!window.matchMedia('(pointer: fine)').matches) return;
+    var MAX = 6;
+    frame.addEventListener('pointermove', function (e) {
+      var r = frame.getBoundingClientRect();
+      var px = (e.clientX - r.left) / r.width - 0.5;
+      var py = (e.clientY - r.top) / r.height - 0.5;
+      frame.style.transform = 'perspective(900px) rotateX(' + (-py * 2 * MAX).toFixed(2) +
+        'deg) rotateY(' + (px * 2 * MAX).toFixed(2) + 'deg)';
+    });
+    frame.addEventListener('pointerleave', function () { frame.style.transform = ''; });
+  }
+
+  // Каждая часть запускается отдельно: сбой в одной не ломает остальные
+  [initCrystals, initMenu, initReveal, initTilt].forEach(function (part) {
+    try { part(); } catch (err) { /* сайт остаётся рабочим без этого эффекта */ }
+  });
 })();

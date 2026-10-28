@@ -110,3 +110,36 @@ def test_menu_toggle_on_every_page():
         меню = [а for т, а in теги if т == "nav" and а.get("id") == "site-nav"]
         assert len(кнопки) == 1, f"{путь.name}: кнопка menu-toggle не найдена"
         assert len(меню) == 1, f"{путь.name}: нет nav#site-nav"
+
+
+def test_crystals_script_failure_removes_js_class():
+    # если crystals.js не загрузился, страница должна остаться рабочей: класс js снимается
+    for путь in СТРАНИЦЫ:
+        скрипты = [а for т, а in разобрать(путь).теги if т == "script" and "crystals.js" in а.get("src", "")]
+        assert len(скрипты) == 1
+        обработчик = скрипты[0].get("onerror") or ""
+        assert "classList.remove('js')" in обработчик, f"{путь.name}: нет запасного выхода при сбое crystals.js"
+
+
+ГЛАВНАЯ = КОРЕНЬ / "index.html"
+
+
+def test_home_blocks_in_agreed_order():
+    текст = ГЛАВНАЯ.read_text(encoding="utf-8")
+    порядок = ['class="hero-banner"', 'id="trust"', 'class="showcase"', "<!-- HOME-CATALOG:START -->",
+               "<!-- HOME-CATALOG:END -->", 'class="steps"', 'class="faq"', "Чем мы занимаемся"]
+    позиции = [текст.find(м) for м in порядок]
+    assert -1 not in позиции, f"не найдено: {[м for м, п in zip(порядок, позиции) if п == -1]}"
+    assert позиции == sorted(позиции), "блоки главной идут не в согласованном порядке"
+    assert "<h2>Другие программы</h2>" in текст
+    assert текст.count("<!-- HOME-CATALOG:START -->") == 1
+
+
+def test_home_scroll_hint_and_trust_icons():
+    теги = разобрать(ГЛАВНАЯ).теги
+    стрелки = [а for т, а in теги if т == "a" and "scroll-hint" in классы(а)]
+    assert len(стрелки) == 1 and стрелки[0].get("href") == "#trust"
+    assert стрелки[0].get("aria-label")
+    assert any(а.get("id") == "trust" for _, а in теги)
+    значки = [а for т, а in теги if т == "svg" and "gem" in классы(а)]
+    assert len(значки) == 4, f"у каждого из 4 пунктов доверия должен быть значок-кристалл, найдено {len(значки)}"

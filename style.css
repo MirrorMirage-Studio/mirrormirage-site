@@ -221,8 +221,9 @@ section.block > .container > h2 { margin-bottom: 22px; font-size: 1.35rem; }
   counter-increment: step; padding: 18px 20px 18px 66px;
 }
 .steps li::before {
-  content: counter(step); position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  content: counter(step); position: absolute; left: 17px; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; display: grid; place-items: center; font-size: .95rem;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);   /* номер в ромбе-кристалле */
   background: linear-gradient(135deg, var(--blue), var(--cyan)); color: #031028; font-weight: 700;
 }
 
@@ -415,7 +416,65 @@ details.faq:hover, details.faq:focus-within, .btn.ghost:hover, .btn.ghost:focus-
    Лежит под текстом блока, клики пропускает. Без скрипта этих правил просто нет. */
 .crystal-host { position: relative; }
 canvas.crystals { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-.crystal-host > :not(canvas.crystals) { position: relative; z-index: 1; }
+.crystal-host > :not(canvas.crystals):not(.scroll-hint) { position: relative; z-index: 1; }
 
 /* Параметр ?reduce-motion — то же, что системная настройка «уменьшить анимацию» (для проверок) */
 html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after { animation: none !important; transition: none !important; }
+
+/* ============================================================
+   Главная страница
+   ============================================================ */
+
+/* Стрелка «листайте» внизу первого экрана */
+.hero-banner { position: relative; }
+.scroll-hint {
+  position: absolute; left: 50%; bottom: 14px; z-index: 1; width: 36px; height: 36px; margin-left: -18px;
+  display: grid; place-items: center; opacity: .8; animation: hint-bob 2.4s ease-in-out infinite;
+}
+.scroll-hint:hover { opacity: 1; text-decoration: none; }
+.scroll-hint span {
+  width: 12px; height: 12px; border-right: 2px solid var(--cyan); border-bottom: 2px solid var(--cyan);
+  transform: rotate(45deg) translate(-2px, -2px); filter: drop-shadow(0 0 6px var(--cyan));
+}
+@keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+section[id] { scroll-margin-top: 80px; }
+
+/* Значки-кристаллы в полосе доверия */
+.trust .gem { display: block; width: 18px; height: 18px; margin: 0 auto 8px; filter: drop-shadow(0 0 6px rgba(56,214,255,.6)); }
+.gem .g1 { fill: rgba(47,107,255,.45); stroke: var(--cyan); stroke-width: 1; stroke-linejoin: round; }
+.gem .g2 { fill: var(--facet); }
+.gem .g3 { fill: rgba(56,214,255,.55); }
+
+/* Витрина: рамка скриншота наклоняется за мышью (наклон ставит crystals.js) */
+.showcase > a { transition: transform .25s ease-out; }
+
+/* «Другие программы»: компактные карточки (их разметку делает tools/build_catalog.py) */
+.grid.mini { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+.card.mini { padding: 16px; }
+.card.mini > a:first-child { display: block; }
+.card.mini .thumb { display: block; width: 100%; height: 110px; object-fit: cover; object-position: top; margin-bottom: 12px; border-radius: 8px; border: 1px solid var(--line); }
+.card.mini .placeholder-shot { height: 110px; margin-bottom: 12px; }
+.card.mini h3 { font-size: .95rem; margin-bottom: 4px; }
+.card.mini .price { font-size: .95rem; margin: 0 0 8px; color: var(--muted); }
+.card.mini > a:last-child { font-size: .92rem; font-weight: 600; }
+
+/* «Как купить»: светящаяся линия, соединяющая номера шагов */
+.steps { position: relative; }
+.steps::before {
+  content: ""; position: absolute; left: 36px; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(180deg, transparent, var(--cyan) 14%, var(--cyan) 86%, transparent);
+  box-shadow: 0 0 10px var(--cyan); opacity: .55;
+}
+
+/* Частые вопросы: плавное раскрытие (где браузер не умеет — раскрывается сразу) */
+:root { interpolate-size: allow-keywords; }
+@supports selector(::details-content) {
+  details.faq::details-content { block-size: 0; overflow: hidden; transition: block-size .35s ease, content-visibility .35s allow-discrete; }
+  details.faq[open]::details-content { block-size: auto; }
+}
+
+/* Проявление блоков при прокрутке. Класс reveal-on ставит crystals.js: если он не загрузился, блоки видны сразу */
+.reveal-on section.block { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+.reveal-on section.block.shown { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal-on section.block { opacity: 1; transform: none; } }
+html.reduce-motion.reveal-on section.block { opacity: 1; transform: none; }

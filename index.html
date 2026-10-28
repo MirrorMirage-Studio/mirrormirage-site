@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
   <script>document.documentElement.classList.add('js')</script>
-  <script src="crystals.js" defer></script>
+  <script src="crystals.js" defer onerror="document.documentElement.classList.remove('js')"></script>
 </head>
 <body class="bg-portal">
 
@@ -35,6 +35,18 @@
         <a class="btn ghost" href="services.html">Заказать работу</a>
       </div>
     </div>
+    <a class="scroll-hint" href="#trust" aria-label="Листайте вниз"><span></span></a>
+  </section>
+
+  <section class="block" id="trust">
+    <div class="container">
+      <div class="trust">
+        <div><svg class="gem" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="g1" d="M12 2l8 10-8 10-8-10z"/><path class="g2" d="M12 2l8 10-8 3z"/><path class="g3" d="M12 2L4 12l8 3z"/></svg><b>Ключ сразу</b><span>приходит в Telegram после оплаты</span></div>
+        <div><svg class="gem" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="g1" d="M12 2l8 10-8 10-8-10z"/><path class="g2" d="M12 2l8 10-8 3z"/><path class="g3" d="M12 2L4 12l8 3z"/></svg><b>7 дней бесплатно</b><span>сначала попробуйте, потом платите</span></div>
+        <div><svg class="gem" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="g1" d="M12 2l8 10-8 10-8-10z"/><path class="g2" d="M12 2l8 10-8 3z"/><path class="g3" d="M12 2L4 12l8 3z"/></svg><b>Карта и СБП</b><span>безопасная оплата Robokassa</span></div>
+        <div><svg class="gem" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="g1" d="M12 2l8 10-8 10-8-10z"/><path class="g2" d="M12 2l8 10-8 3z"/><path class="g3" d="M12 2L4 12l8 3z"/></svg><b>Официальный чек</b><span>самозанятый, чек в «Мой налог»</span></div>
+      </div>
+    </div>
   </section>
 
   <section class="block">
@@ -58,11 +70,37 @@
 
   <section class="block">
     <div class="container">
-      <div class="trust">
-        <div><b>Ключ сразу</b><span>приходит в Telegram после оплаты</span></div>
-        <div><b>7 дней бесплатно</b><span>сначала попробуйте, потом платите</span></div>
-        <div><b>Карта и СБП</b><span>безопасная оплата Robokassa</span></div>
-        <div><b>Официальный чек</b><span>самозанятый, чек в «Мой налог»</span></div>
+      <h2>Другие программы</h2>
+      <div class="grid mini">
+      <!-- HOME-CATALOG:START -->
+      <div class="card mini" data-program="sleep-timer">
+        <img class="thumb" src="images/sleep-timer/screens.png" alt="Sleep Timer" loading="lazy">
+        <h3>Sleep Timer</h3>
+        <div class="price">Бесплатно</div>
+        <a href="https://github.com/MirrorMirage-Studio/sleep-timer-downloads/releases/download/v1.4.1/SleepTimer_Setup.exe">Скачать →</a>
+      </div>
+
+      <div class="card mini" data-program="universal-vpn">
+        <div class="placeholder-shot">скриншот программы</div>
+        <h3>MirrorMirage VPN</h3>
+        <div class="price">Скоро бесплатно</div>
+        <a href="contacts.html">Следить →</a>
+      </div>
+
+      <div class="card mini" data-program="manga-translator">
+        <div class="placeholder-shot">скриншот программы</div>
+        <h3>Manga Translator</h3>
+        <div class="price">Скоро в продаже</div>
+        <a href="contacts.html">Следить →</a>
+      </div>
+
+      <div class="card mini" data-program="wallpaper-switcher">
+        <div class="placeholder-shot">скриншот программы</div>
+        <h3>Переключатель обоев</h3>
+        <div class="price">Скоро в продаже</div>
+        <a href="contacts.html">Следить →</a>
+      </div>
+      <!-- HOME-CATALOG:END -->
       </div>
     </div>
   </section>
