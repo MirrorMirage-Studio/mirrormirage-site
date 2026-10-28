@@ -8,8 +8,10 @@
   <meta name="description" content="Платёж отменён или завершился ошибкой.">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="crystals.js" defer></script>
 </head>
-<body class="bg-portal">
+<body class="bg-portal calm">
 
 <header class="site">
   <div class="container">
@@ -17,7 +19,8 @@
       <img src="images/icon.png" alt="Логотип MirrorMirage">
       <span>MIRRORMIRAGE</span>
     </a>
-    <nav><ul><li><a href="index.html">Главная</a></li><li><a href="programs.html">Программы</a></li><li><a href="services.html">Услуги</a></li><li><a href="about.html">О студии</a></li><li><a href="contacts.html">Контакты</a></li></ul></nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Меню"><span></span></button>
+    <nav id="site-nav"><ul><li><a href="index.html">Главная</a></li><li><a href="programs.html">Программы</a></li><li><a href="services.html">Услуги</a></li><li><a href="about.html">О студии</a></li><li><a href="contacts.html">Контакты</a></li></ul></nav>
   </div>
 </header>
 

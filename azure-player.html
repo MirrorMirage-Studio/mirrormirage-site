@@ -7,11 +7,13 @@
   <meta name="description" content="Azure Player — футуристичный mp3-плеер для Windows от студии MirrorMirage: живая визуализация, обложки альбомов, таймер сна, четыре темы. Бесплатная проба 7 дней, разовая покупка.">
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="crystals.js" defer></script>
   <style>
     /* Стили этой страницы. Общий вид сайта берётся из style.css */
     .ap-hero { text-align: center; padding: 60px 0 20px; }
     .ap-badge { display: inline-block; padding: 4px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--cyan); font-size: .8rem; letter-spacing: .12em; margin-bottom: 16px; }
-    .ap-hero h1 { font-size: clamp(2rem, 5.5vw, 3.6rem); line-height: 1.12; letter-spacing: .02em; }
+    .ap-hero h1 { font-size: clamp(1.6rem, 4.4vw, 2.8rem); line-height: 1.18; letter-spacing: 0; }
     .ap-hero h1 span { color: var(--cyan); text-shadow: 0 0 28px rgba(56,214,255,.5); }
     .ap-hero p.lead { max-width: 680px; margin: 16px auto 0; color: var(--muted); font-size: 1.1rem; }
     .ap-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 26px; }
@@ -43,7 +45,8 @@
       <img src="images/icon.png" alt="Логотип MirrorMirage">
       <span>MIRRORMIRAGE</span>
     </a>
-    <nav><ul><li><a href="index.html">Главная</a></li><li><a href="programs.html" class="active">Программы</a></li><li><a href="services.html">Услуги</a></li><li><a href="about.html">О студии</a></li><li><a href="contacts.html">Контакты</a></li></ul></nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Меню"><span></span></button>
+    <nav id="site-nav"><ul><li><a href="index.html">Главная</a></li><li><a href="programs.html" class="active">Программы</a></li><li><a href="services.html">Услуги</a></li><li><a href="about.html">О студии</a></li><li><a href="contacts.html">Контакты</a></li></ul></nav>
   </div>
 </header>
 
